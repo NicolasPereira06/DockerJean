@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mysql:
+    build:
+      context: ./db
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: fatec11
+      MYSQL_DATABASE: user_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./myapp
+    container_name: backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: 100.26.21.37
+      DB_USER: root
+      DB_PASSWORD: fatec11
+      DB_NAME: user_db
+      DB_PORT: 3306
+
+  frontend:
+    build:
+      context: ./client
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+volumes:
+  mysql-data:
